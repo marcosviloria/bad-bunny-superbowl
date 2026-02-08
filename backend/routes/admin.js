@@ -171,4 +171,37 @@ function updateLeaderboard() {
   });
 }
 
+// Toggle predictions open/closed (owner only)
+router.post('/toggle-predictions', verifyOwner, (req, res) => {
+  // Get current state and toggle it
+  db.get('SELECT predictions_open FROM settings WHERE id = 1', (err, row) => {
+    if (err) {
+      return res.status(500).json({ error: 'Failed to toggle predictions' });
+    }
+    
+    const newState = row ? !row.predictions_open : 1;
+    db.run(
+      'UPDATE settings SET predictions_open = ? WHERE id = 1',
+      [newState ? 1 : 0],
+      (err) => {
+        if (err) {
+          return res.status(500).json({ error: 'Failed to toggle predictions' });
+        }
+        res.json({ predictionsOpen: Boolean(newState), message: newState ? 'Predictions opened' : 'Predictions closed' });
+      }
+    );
+  });
+});
+
+// Get predictions status (owner only)
+router.post('/get-predictions-status', verifyOwner, (req, res) => {
+  db.get('SELECT predictions_open FROM settings WHERE id = 1', (err, row) => {
+    if (err) {
+      return res.status(500).json({ error: 'Failed to get status' });
+    }
+    res.json({ predictionsOpen: row ? Boolean(row.predictions_open) : true });
+  });
+});
+
 module.exports = router;
+

@@ -1084,7 +1084,19 @@ class App {
                             </ul>
                         </div>
 
+                        
+
                         <div class="admin-section">
+                            <h3>Predictions Status</h3>
+                            <div class="form-group">
+                                <label>Owner Password</label>
+                                <input type="password" id="predictionsPassword" placeholder="Enter owner password">
+                            </div>
+                            <div style="margin-bottom: 15px; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 8px; text-align: center;">
+                                <div id="predictionsStatusDisplay" style="font-size: 18px; font-weight: 700; margin-bottom: 10px;">Loading...</div>
+                            </div>
+                            <button onclick="app.togglePredictions()">Toggle Predictions</button>
+                        </div><div class="admin-section">
                             <h3>Delete User</h3>
                             <div class="form-group">
                                 <label>Owner Password</label>
@@ -1145,13 +1157,7 @@ class App {
             document.getElementById('leaderboardPage').classList.add('active');
             document.getElementById('adminPage').classList.remove('active');
             this.loadLeaderboard();
-        } else if (pageName === 'admin') {
-            document.getElementById('mainPage').classList.remove('active');
-            document.getElementById('leaderboardPage').classList.remove('active');
-            document.getElementById('adminPage').classList.add('active');
-            this.loadCorrectSetlist();
-            this.loadLeaderboard();
-            this.renderAdminLeaderboard();
+        \n            this.loadPredictionsStatus();
         }
     }
 

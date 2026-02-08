@@ -65,8 +65,24 @@ function initializeDatabase() {
       )
     `);
 
+        // Settings (admin controls)
+    db.run(`
+      CREATE TABLE IF NOT EXISTS settings (
+        id INTEGER PRIMARY KEY CHECK (id = 1),
+        predictions_open INTEGER DEFAULT 1
+      )
+    `);
+
+    // Initialize settings if empty
+    db.get('SELECT id FROM settings WHERE id = 1', (err, row) => {
+      if (!row) {
+        db.run('INSERT INTO settings (id, predictions_open) VALUES (1, 1)');
+      }
+    });
+
     console.log('Database tables initialized');
   });
 }
 
 module.exports = db;
+
