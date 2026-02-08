@@ -1157,7 +1157,59 @@ class App {
             document.getElementById('leaderboardPage').classList.add('active');
             document.getElementById('adminPage').classList.remove('active');
             this.loadLeaderboard();
-        \n            this.loadPredictionsStatus();
+        } else if (pageName === 'admin') {
+            document.getElementById('mainPage').classList.remove('active');
+            document.getElementById('leaderboardPage').classList.remove('active');
+            document.getElementById('adminPage').classList.add('active');
+            this.loadCorrectSetlist();
+            this.loadLeaderboard();
+            this.renderAdminLeaderboard();
+            this.loadPredictionsStatus();
+        }
+    }
+
+    async togglePredictions() {
+        const password = document.getElementById('predictionsPassword').value;
+        if (!password) {
+            alert('Please enter the owner password');
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/admin/toggle-predictions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ownerPassword: password })
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+                alert('Error: ' + data.error);
+                return;
+            }
+
+            alert(data.message);
+            this.loadPredictionsStatus();
+        } catch (err) {
+            console.error('Error toggling predictions:', err);
+            alert('Failed to toggle predictions');
+        }
+    }
+
+    async loadPredictionsStatus() {
+        try {
+            const res = await fetch('/api/predictions/status');
+            if (res.ok) {
+                const data = await res.json();
+                const statusDisplay = document.getElementById('predictionsStatusDisplay');
+                if (statusDisplay) {
+                    statusDisplay.innerHTML = data.predictionsOpen 
+                        ? '<span style="color: #10b981;">✓ Predictions OPEN</span>' 
+                        : '<span style="color: #ef4444;">✗ Predictions CLOSED</span>';
+                }
+            }
+        } catch (err) {
+            console.error('Error loading predictions status:', err);
         }
     }
 
