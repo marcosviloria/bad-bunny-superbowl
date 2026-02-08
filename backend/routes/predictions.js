@@ -2,12 +2,14 @@ const express = require('express');
 const db = require('../database');
 const router = express.Router();
 
-// Get deadline (7:30 PM tonight)
+// Get deadline (7:30 PM EST tonight)
 function isBeforeDeadline() {
   const now = new Date();
-  const deadline = new Date();
-  deadline.setHours(19, 30, 0, 0); // 7:30 PM
-  return now < deadline;
+  // Convert to EST (UTC-5)
+  const estTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  const deadline = new Date(estTime);
+  deadline.setHours(19, 30, 0, 0); // 7:30 PM EST
+  return estTime < deadline;
 }
 
 // Get user's predictions

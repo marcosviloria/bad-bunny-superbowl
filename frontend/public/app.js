@@ -481,7 +481,6 @@ class App {
                 artist: '${song.artist.replace(/'/g, "\\'")}',
                 albumCover: '${song.albumCover}'
             })">
-                <img src="${song.albumCover}" alt="${song.name}" class="song-cover" onerror="this.src='data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2250%22%20height=%2250%22%3E%3Crect%20fill=%22%23333%22%20width=%2250%22%20height=%2250%22/%3E%3Ctext%20fill=%22%23999%22%20x=%2225%22%20y=%2225%22%20text-anchor=%22middle%22%20dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                 <div class="song-info">
                     <div class="song-name">${song.name}</div>
                     <div class="song-artist">${song.artist}</div>
