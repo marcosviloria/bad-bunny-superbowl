@@ -1,0 +1,26 @@
+1. Install Node.js from https://nodejs.org/ (LTS version)
+
+2. Open PowerShell in the backend folder:
+   - Navigate to: c:\Users\marco\Desktop\Python Projects\superbowl\backend
+   
+3. Install dependencies:
+   npm install
+
+4. Create .env file (copy .env.example and fill in values):
+   - SPOTIFY_CLIENT_ID: Get from https://developer.spotify.com/dashboard
+   - SPOTIFY_CLIENT_SECRET: Get from https://developer.spotify.com/dashboard
+   - OWNER_PASSWORD: Your admin password
+   - SESSION_SECRET: Any random string (e.g., "my_random_secret_123")
+
+5. Start the server:
+   npm start
+
+6. Open browser to http://localhost:5000
+
+7. Create your account and share the URL with others!
+
+IMPORTANT for deployment:
+- Host on Heroku.com (easiest - free tier available)
+- Or deploy to Railway.app
+- Or any VPS (AWS, DigitalOcean, etc.)
+- See README.md for detailed deployment instructions

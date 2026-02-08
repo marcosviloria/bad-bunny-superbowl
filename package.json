@@ -1,0 +1,15 @@
+{
+  "name": "bad-bunny-superbowl-predictor",
+  "version": "1.0.0",
+  "description": "Bad Bunny Super Bowl Setlist Prediction App",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "cd backend && node server.js",
+    "dev": "cd backend && node server.js",
+    "install-all": "cd backend && npm install",
+    "build": "echo 'No build step needed for this project'"
+  },
+  "keywords": ["bad-bunny", "super-bowl", "prediction", "setlist"],
+  "author": "",
+  "license": "MIT"
+}

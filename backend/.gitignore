@@ -1,0 +1,8 @@
+node_modules/
+superbowl.db
+superbowl.db-wal
+superbowl.db-shm
+.env
+.DS_Store
+*.log
+npm-debug.log*
