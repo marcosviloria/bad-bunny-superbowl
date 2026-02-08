@@ -222,6 +222,7 @@ class App {
         this.userPredictions = [];
         this.leaderboard = [];
         this.correctSetlist = [];
+        this.predictionsOpen = true;
         this.timerId = null;
 
         this.init();
@@ -237,11 +238,7 @@ class App {
             const res = await fetch('/api/users/current');
             if (res.ok) {
                 this.currentUser = await res.json();
-                this.renderMainPage();
-                this.loadUserPredictions();
-                this.loadBadBunnySongs();
-                   this.loadCorrectSetlist();
-            } else {
+                await this.loadPredictionsStatus();
                 this.renderSignup();
             }
         } catch (err) {
@@ -418,6 +415,10 @@ class App {
     }
 
     async addSongToSetlist(song) {
+        if (!this.predictionsOpen) {
+            this.showError('Predictions are currently closed');
+            return;
+        }
         if (this.userPredictions.length >= 15) {
             this.showError('Maximum 15 songs allowed');
             return;
@@ -448,6 +449,10 @@ class App {
     }
 
     async removeSongFromSetlist(predictionId) {
+        if (!this.predictionsOpen) {
+            this.showError('Predictions are currently closed');
+            return;
+        }
         try {
             const res = await fetch(`/api/predictions/remove/${predictionId}`, {
                 method: 'DELETE'
@@ -567,6 +572,10 @@ class App {
     }
 
     async reorderSetlist(orderedIds) {
+        if (!this.predictionsOpen) {
+            this.showError('Predictions are currently closed');
+            return;
+        }
         try {
             await fetch('/api/predictions/reorder', {
                 method: 'PUT',
@@ -877,11 +886,14 @@ class App {
         setInterval(() => {
             if (this.currentPage === 'leaderboard') {
                 this.loadLeaderboard();
+                this.loadPredictionsStatus();
             } else if (this.currentPage === 'admin') {
                 this.loadCorrectSetlist();
                 this.loadLeaderboard();
+                this.loadPredictionsStatus();
             } else if (this.currentPage === 'main') {
                 this.renderSetlist();
+                this.loadPredictionsStatus();
             }
         }, 10000);
     }
@@ -971,11 +983,7 @@ class App {
     }
 
     renderMainPage() {
-        const now = new Date();
-        const deadline = new Date();
-        deadline.setHours(19, 30, 0, 0);
-        const timeUntilDeadline = deadline - now;
-        const isOpen = timeUntilDeadline > 0;
+        const isOpen = this.predictionsOpen;
 
         document.getElementById('app').innerHTML = `
             <div class="container">
@@ -994,7 +1002,7 @@ class App {
                 </div>
 
                 <div id="mainPage" class="page">
-                    ${!isOpen ? '<div class="deadline-warning">Predictions are closed! Voting ended at 7:30 PM</div>' : '<div class="success-message">Predictions open until 7:30 PM tonight!</div>'}
+                    ${!isOpen ? '<div class="deadline-warning">✗ Predictions are CLOSED</div>' : '<div class="success-message">✓ Predictions OPEN</div>'}
                     
                     <div class="main-content">
                         <div class="search-section">
@@ -1201,11 +1209,22 @@ class App {
             const res = await fetch('/api/predictions/status');
             if (res.ok) {
                 const data = await res.json();
+                this.predictionsOpen = data.predictionsOpen;
+                
                 const statusDisplay = document.getElementById('predictionsStatusDisplay');
                 if (statusDisplay) {
                     statusDisplay.innerHTML = data.predictionsOpen 
                         ? '<span style="color: #10b981;">✓ Predictions OPEN</span>' 
                         : '<span style="color: #ef4444;">✗ Predictions CLOSED</span>';
+                }
+                
+                // Update main page status if it exists
+                const mainPageStatus = document.querySelector('#mainPage > div:first-child');
+                if (mainPageStatus && mainPageStatus.classList.contains('success-message', 'deadline-warning')) {
+                    mainPageStatus.innerHTML = this.predictionsOpen
+                        ? '<div class="success-message">✓ Predictions OPEN</div>'
+                        : '<div class="deadline-warning">✗ Predictions are CLOSED</div>';
+                    mainPageStatus.className = this.predictionsOpen ? 'success-message' : 'deadline-warning';
                 }
             }
         } catch (err) {
