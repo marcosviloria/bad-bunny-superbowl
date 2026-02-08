@@ -1,2 +1,1 @@
-release: cd backend && npm install
-web: cd backend && node server.js
+web: bash build.sh && cd backend && node server.js
