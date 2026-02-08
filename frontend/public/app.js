@@ -240,6 +240,7 @@ class App {
                 this.renderMainPage();
                 this.loadUserPredictions();
                 this.loadBadBunnySongs();
+                   this.loadCorrectSetlist();
             } else {
                 this.renderSignup();
             }
